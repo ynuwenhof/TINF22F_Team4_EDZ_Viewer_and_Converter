@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<partsmanagement count="1" length-unit="mm" weight-unit="kg" type="EPLAN.PartsManagement" build="137.1" database="S:\EPLAN_P8\Artikel\MURR\2023030802.mdb">
+ <propertydefinition identname="EDS.Part.ItemDoesNotNeedCPP" category="14" datatype="1" P_DMUSERPROPDEFTABLEENTRY_DESCRIPTION="en_US@Specifies that the item does not have any electrical engineering connection point or fluid power connection point that requires connection point pattern.;de_DE@Gibt an, dass das Bauteil keinen elektro- oder fluidtechnischen Anschluss besitzt, der ein Anschlussbild erfordert.;" P_DMUSERPROPDEFTABLEENTRY_DISPLAYNAME="en_US@Item does not require connection point pattern;de_DE@Bauteil erfordert kein Anschlussbild;" lastchange="VSC / 14.03.2023 15:19:40" proptype="1003" propuser="117" translateflag="0" unused="0"/>
+</partsmanagement>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest version="2.0">
+ <packages>
+  <package type="part" key="MURR.7000-88601-0000000" name="MURR.7000-88601-0000000">
+   <items>
+    <item type="partxml" name="part" locator="MURR.7000-88601-0000000.part.xml"/>
+    <item type="macro" name="graphicmacro" locator="MURR\Connection-Technology\T-coupler\Signal\7000-88601-0000000_3D.ema"/>
+    <item type="macro" name="groupsymbolmacro" locator="MURR\Connection-Technology\T-coupler\Signal\7000-88601-0000000.ema"/>
+    <item type="partxml" name="manufacturer" locator="MURR.manufacturer.xml"/>
+    <item type="picture" name="picturefile" locator="MURR\Connection-Technology\T-coupler\Signal\7000_88601_0000000.png"/>
+   </items>
+  </package>
+  <package type="propertydefinition" key="EDS.Part.ItemDoesNotNeed3DMacro" name="EDS.Part.ItemDoesNotNeed3DMacro">
+   <items>
+    <item type="partxml" name="propertydefinition" locator="EDS.Part.ItemDoesNotNeed3DMacro.propertydefinition.xml"/>
+   </items>
+  </package>
+  <package type="propertydefinition" key="EDS.Part.ItemDoesNotNeedCPP" name="EDS.Part.ItemDoesNotNeedCPP">
+   <items>
+    <item type="partxml" name="propertydefinition" locator="EDS.Part.ItemDoesNotNeedCPP.propertydefinition.xml"/>
+   </items>
+  </package>
+  <package type="propertydefinition" key="EDS.Part.ItemDoesNotNeedDrill" name="EDS.Part.ItemDoesNotNeedDrill">
+   <items>
+    <item type="partxml" name="propertydefinition" locator="EDS.Part.ItemDoesNotNeedDrill.propertydefinition.xml"/>
+   </items>
+  </package>
+  <package type="propertydefinition" key="EDS.Part.EPLANAuxiliaryPart" name="EDS.Part.EPLANAuxiliaryPart">
+   <items>
+    <item type="partxml" name="propertydefinition" locator="EDS.Part.EPLANAuxiliaryPart.propertydefinition.xml"/>
+   </items>
+  </package>
+ </packages>
+</manifest>

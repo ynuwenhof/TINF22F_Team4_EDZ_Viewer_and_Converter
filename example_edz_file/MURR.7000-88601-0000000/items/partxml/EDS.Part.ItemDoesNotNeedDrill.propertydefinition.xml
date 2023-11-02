@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<partsmanagement count="1" length-unit="mm" weight-unit="kg" type="EPLAN.PartsManagement" build="137.1" database="S:\EPLAN_P8\Artikel\MURR\2023030802.mdb">
+ <propertydefinition identname="EDS.Part.ItemDoesNotNeedDrill" category="14" datatype="1" P_DMUSERPROPDEFTABLEENTRY_DESCRIPTION="en_US@Specifies that the item does not require holes in the mounting surface in any mounting possibility.;de_DE@Gibt an, dass das Bauteil in keiner Montagemöglichkeit Bohrungen in der Montagefläche erfordert.;" P_DMUSERPROPDEFTABLEENTRY_DISPLAYNAME="en_US@Item does not require drilling pattern;de_DE@Bauteil erfordert kein Bohrbild;" lastchange="VSC / 14.03.2023 15:19:40" proptype="1003" propuser="117" translateflag="0" unused="0"/>
+</partsmanagement>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<partsmanagement count="1" length-unit="mm" weight-unit="kg" type="EPLAN.PartsManagement" build="137.1" database="S:\EPLAN_P8\Artikel\MURR\2023030802.mdb">
+ <address class="12" P_PART_ADDRESS_SHORTNAME="MURR" P_PART_ADDRESS_EMAIL="info@murrelektronik.com" P_PART_ADDRESS_FAX="+49 (0)7191 - 47-130" P_PART_ADDRESS_LASTCHANGE="VSC / 15.03.2023 13:56:58" P_PART_ADDRESS_LONGNAME="Murrelektronik" P_PART_ADDRESS_NAME1="Murrelektronik GmbH" P_PART_ADDRESS_NOTE="de_DE@https://www.murrelektronik.com;en_US@https://www.murrelektronik.com;" P_PART_ADDRESS_PHONE="+49 (71 91) 47-0" P_PART_ADDRESS_STATE="Germany" P_PART_ADDRESS_STREET="Falkenstraße 3" P_PART_ADDRESS_TOWN="Oppenweiler" P_PART_ADDRESS_ZIPTOWN="71570"/>
+</partsmanagement>
