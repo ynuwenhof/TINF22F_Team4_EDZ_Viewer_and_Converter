@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'
-import {existsFile} from './file.js';
+import {convert, existsFile} from './file.js';
 
 dotenv.config()
 
@@ -13,11 +13,15 @@ export async function generateToken(fileID) {
 }
 
 export async function verifyToken(token) {
-    try {
+    if (token) {
+        try {
         const decoded = jwt.verify(token, secretKey);
         existsFile(decoded.fileID);
-        return decoded;
-    } catch (err) {
-        throw new Error('The token has expired or is invalid. Please upload file again. : ' + err.message)
+        return decoded.fileID;
+        } catch (err) {
+            throw new Error('The token has expired or is invalid. Please upload file again. : ' + err.message)
+        }
+    } else {
+        throw new Error('authHeader is null');
     }
 }

@@ -2,6 +2,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import multer from "multer";
+import {convert} from "./file";
+import {verifyToken} from "./token";
 
 const app = express();
 app.use(bodyParser.json())
@@ -24,7 +26,6 @@ const upload = multer({ storage: storage });
 // insert to table in SQLite an entry with path to file
 // should save the edz file in ../Files/{id}/here.edz (important if folder exists, rename folder)
 // generate with returned id a token and add id to response
-// and convert async to AASX and save in ./Files/{id}/here.aasx
 // res: folder structure
 app.post("/api/set/file", async (req, res) => {
     const body = req.body;
@@ -32,19 +33,33 @@ app.post("/api/set/file", async (req, res) => {
 
     }
     catch (err) {
-
+        res.status(400).json({ success: false, message: err });
     }
 });
 
-// res: file contents (text / xml / picture / pdf) to view the file
-app.get("/api/get/file", async (req, res) => {
-    const body = req.body;
-    const filePath = body.filePath;
+// convert to AASX and save in ./Files/{id}/here.aasx
+app.get("/api/get/convert", async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
     try {
+        const id = verifyToken(token)
 
     }
     catch (err) {
+        res.status(400).json({ success: false, message: err });
+    }
+})
 
+// res: file contents (text / xml / picture / pdf) to view the file
+app.get("/api/get/file", async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const body = req.body;
+    const filePath = body.filePath;
+    try {
+        const id = verifyToken(token)
+
+    }
+    catch (err) {
+        res.status(400).json({ success: false, message: err });
     }
 });
 
@@ -53,11 +68,19 @@ app.get("/api/get/file", async (req, res) => {
 // path is stored in table with id
 // res: download-link for aasx file
 app.get("/api/get/downloadAASX", async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
     const body = req.body;
     try {
+        const id = verifyToken(token)
 
     }
     catch (err) {
-
+        res.status(400).json({ success: false, message: err });
     }
+});
+
+
+// host server
+app.listen(port, () => {
+    console.log(`Server is running on https://localhost:${port}`);
 });
