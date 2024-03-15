@@ -1,0 +1,26 @@
+.dropzone {
+    width: 960px;
+    border: 1px dashed black;
+    margin: auto auto;
+    position: relative;
+    text-align: center;
+    padding: 4rem;
+    margin-top: 4rem;
+
+    img {
+        margin-bottom: 2rem;
+    }
+
+    input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
+
+    label {
+        margin-top: 2rem;
+    }
+}
