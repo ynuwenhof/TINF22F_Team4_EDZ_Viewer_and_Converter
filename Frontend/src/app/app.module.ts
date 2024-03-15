@@ -7,13 +7,17 @@ import { FileUploadComponent } from './pages/file-upload/file-upload.component';
 import { RouterOutlet } from '@angular/router';
 import { NavigationComponent } from './shared/navigation/navigation.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { CardComponent } from './shared/card/card.component';
+import { ViewerComponent } from './pages/viewer/viewer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     FileUploadComponent,
     NavigationComponent,
-    DashboardComponent
+    DashboardComponent,
+    CardComponent,
+    ViewerComponent
   ],
   imports: [
     BrowserModule,

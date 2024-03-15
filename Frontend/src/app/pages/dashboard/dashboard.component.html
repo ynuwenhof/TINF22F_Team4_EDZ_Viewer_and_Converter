@@ -1,1 +1,4 @@
-<p>dashboard works!</p>
+<div class="container my-4 d-flex flex-row flex-wrap justify-content-around">
+    <app-card *ngFor="let card of cards" [title]="card.title" [description]="card.description" [size]="card.size" [partCount]="card.partCount" [size]="card.size" [date]="card.date" [id]="card.id">
+    </app-card>
+</div>
