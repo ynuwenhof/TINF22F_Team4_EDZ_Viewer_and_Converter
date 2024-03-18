@@ -6,14 +6,13 @@ import { Component } from '@angular/core';
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
-  loading = false;
-  cards: any;
-  cardsInQueue = 0;
+  loading = true;
+  components: any;
 
   constructor() {
     setTimeout(() => {
-      this.cardsInQueue = 3;
-      this.cards = [
+      this.loading = false;
+      this.components = [
         {
           title: "Bauteil",
           description: "Beschreigung?",
@@ -36,7 +35,7 @@ export class DashboardComponent {
           size: "xxxMB",
           date: new Date(),
           partCount: 3,
-          id: "yyy"
+          id: "zzz"
         },
       ];
 

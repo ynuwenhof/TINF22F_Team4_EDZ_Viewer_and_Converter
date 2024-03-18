@@ -7,8 +7,8 @@ import { ViewerComponent } from './pages/viewer/viewer.component';
 const routes: Routes = [
   { path: 'upload', component: FileUploadComponent },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'viewer/:id', component: ViewerComponent },
-  { path: '**',   redirectTo: '/upload' },
+  { path: 'viewer/:componentID/:partID', component: ViewerComponent },
+  { path: '**', redirectTo: '/upload' },
 ];
 
 @NgModule({

@@ -1,14 +1,14 @@
 <div class="container my-5 d-flex flex-row flex-wrap justify-content-around">
-    <div *ngIf="!cards" class="spinner-border" role="status">
+    <div *ngIf="loading" class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
 
-    <div *ngIf="cards.length === 0">
+    <div *ngIf="!loading && components.length === 0">
         <h3 class="text-center">Keine Objekte Vorhanden</h3>
         <span>Klicken Sie <a routerLink="/upload">hier</a> um eine neue Datei hochzuladen</span>
     </div>
 
-    <app-card *ngFor="let card of cards" [title]="card.title" [description]="card.description" [size]="card.size"
-        [partCount]="card.partCount" [size]="card.size" [date]="card.date" [id]="card.id">
+    <app-card *ngFor="let component of components" [title]="component.title" [description]="component.description" [size]="component.size"
+        [partCount]="component.partCount" [size]="component.size" [date]="component.date" [componentID]="component.id">
     </app-card>
 </div>

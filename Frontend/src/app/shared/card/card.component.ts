@@ -11,6 +11,6 @@ export class CardComponent {
   @Input({ required: true }) size!: string;
   @Input({ required: true }) partCount!: number;
   @Input({ required: true }) date!: Date;
-  @Input({ required: true }) id!: string;
+  @Input({ required: true }) componentID!: string;
 }
 
