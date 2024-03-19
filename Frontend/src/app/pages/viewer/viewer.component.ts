@@ -10,15 +10,24 @@ export class ViewerComponent {
   loading = true;
   component: any;
 
-  constructor(private activeRoute: ActivatedRoute) {
-    setTimeout(() => {
-      this.loading = false;
-      this.component = {
-        title: this.activeRoute.snapshot.paramMap.get('componentID'),
-        part: this.activeRoute.snapshot.paramMap.get('partID'), // convert to number
-        partCount: 5,
-      };
-    }, 400);
+  constructor(private route: ActivatedRoute) {}
 
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      const componentID = params['componentID'];
+      const partID = +params['partID'];
+
+      // REPLACE WITH API REQUEST
+
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+        this.component = {
+          id: componentID,
+          part: partID,
+          partCount: 5,
+        };
+      }, 400);
+    })
   }
 }

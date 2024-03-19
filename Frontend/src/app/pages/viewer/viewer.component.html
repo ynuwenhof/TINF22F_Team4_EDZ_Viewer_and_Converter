@@ -1,4 +1,4 @@
-<div class="container my-5 d-flex flex-row flex-wrap justify-content-around">
+<div class="container my-5 d-flex justify-content-center">
     <div *ngIf="loading" class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
@@ -8,74 +8,76 @@
         <span>Klicken Sie <a routerLink="/dashboard">hier</a> um zum Dashboard zu gelangen</span>
     </div>
 
-    <div *ngIf="!loading && component" class="row">
-        <div class="col-5">
-            <h3>{{ component.title }}</h3>
-
-            <img class="my-5" src="./assets/placeholder.svg" />
-
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li  class="page-item" [ngClass]="{'disabled': component.part-1 <= 1}">
-                        <a class="page-link" aria-label="Previous">
-                            <span aria-hidden="true">&laquo; Zurück</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link active">Bauteil {{ component.part }}</a></li>
-                    <li class="page-item" [ngClass]="{'disabled': component.part+1 > component.partCount}">
-                        <a class="page-link" aria-label="Next">
-                            <span aria-hidden="true">Weiter &raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-        <div class="col-7">
-            <h3>Content</h3>
-
-            <table class="table my-5">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>&#64;mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>&#64;fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>&#64;twitter</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h4>Documents:</h4>
-            <ul>
-                <li>Lorem, ipsum dolor sit amet consectetur adipisicing elit. In, sit tempore nemo vel aliquid
-                    asperiores, quisquam dolorem quae doloribus, reiciendis vero fugiat veniam eveniet a atque neque
-                    temporibus velit rem!</li>
-                <li>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis itaque numquam praesentium?
-                    Minima earum voluptatibus officiis vel hic dolorum dicta, harum porro excepturi molestias
-                    consequuntur natus ducimus, dolor unde commodi.</li>
-                <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus optio quidem fugit quibusdam culpa
-                    architecto delectus commodi, quo libero molestias incidunt cumque recusandae, beatae dicta odio, sit
-                    tempore sed. Nisi?</li>
+    <div *ngIf="!loading && component">
+        <nav aria-label="Page navigation example" class="position-fixed bottom-0 start-50 translate-middle-x">
+            <ul class="pagination">
+                <li  class="page-item" [ngClass]="{'disabled': component.part-1 < 1}">
+                    <a class="page-link" aria-label="Previous" [routerLink]="['/viewer', component.id, component.part-1]">
+                        <span aria-hidden="true">&laquo; Zurück</span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link active">Bauteil {{ component.part }}</a></li>
+                <li class="page-item" [ngClass]="{'disabled': component.part+1 > component.partCount}">
+                    <a class="page-link" aria-label="Next" [routerLink]="['/viewer', component.id, component.part+1]">
+                        <span aria-hidden="true">Weiter &raquo;</span>
+                    </a>
+                </li>
             </ul>
+        </nav>
+
+        <div class="d-flex flex-lg-row flex-column justify-content-md-center justify-content-around">
+            <div class="col-5">
+                <h3>{{ component.id }}</h3>
+    
+                <img class="my-5" src="./assets/placeholder.svg" />
+            </div>
+    
+            <div class="col-7">
+                <h3>Content</h3>
+    
+                <table class="table my-5">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First</th>
+                            <th scope="col">Last</th>
+                            <th scope="col">Handle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>&#64;mdo</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Jacob</td>
+                            <td>Thornton</td>
+                            <td>&#64;fat</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td colspan="2">Larry the Bird</td>
+                            <td>&#64;twitter</td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+                <h4>Documents:</h4>
+                <ul>
+                    <li>Lorem, ipsum dolor sit amet consectetur adipisicing elit. In, sit tempore nemo vel aliquid
+                        asperiores, quisquam dolorem quae doloribus, reiciendis vero fugiat veniam eveniet a atque neque
+                        temporibus velit rem!</li>
+                    <li>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis itaque numquam praesentium?
+                        Minima earum voluptatibus officiis vel hic dolorum dicta, harum porro excepturi molestias
+                        consequuntur natus ducimus, dolor unde commodi.</li>
+                    <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus optio quidem fugit quibusdam culpa
+                        architecto delectus commodi, quo libero molestias incidunt cumque recusandae, beatae dicta odio, sit
+                        tempore sed. Nisi?</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
