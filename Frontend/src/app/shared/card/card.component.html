@@ -1,15 +1,14 @@
 <div class="card my-4" style="width: 18rem;">
     <img class="card-img-top" src="./assets/placeholder.svg" alt="Card image cap">
     <div class="card-body">
-      <h5 class="card-title">{{ title }}</h5>
-      <p class="card-text">{{ description }}</p>
+      <h5 class="card-title">{{ archive.name }}</h5>
     </div>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">Größe: {{ size }}</li>
-      <li class="list-group-item">Anzahl der Parts: {{ partCount }}</li>
-      <li class="list-group-item">Hochgeladen am {{ date }}</li>
+      <li class="list-group-item">Größe: {{ archive.size }}</li>
+      <li class="list-group-item">Anzahl der Parts: {{ archive.packages }}</li>
+      <li class="list-group-item">Hochgeladen am {{ archive.created }}</li>
     </ul>
     <div class="card-body">
-      <a class="btn btn-primary" [routerLink]="['/viewer', componentID, 1]">Anzeigen</a>
+      <a class="btn btn-primary" [routerLink]="['/viewer', archive.hash, 1]">Anzeigen</a>
     </div>
   </div>

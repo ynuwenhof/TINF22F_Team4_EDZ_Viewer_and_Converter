@@ -7,7 +7,7 @@ import { ViewerComponent } from './pages/viewer/viewer.component';
 const routes: Routes = [
   { path: 'upload', component: FileUploadComponent },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'viewer/:componentID/:partID', component: ViewerComponent },
+  { path: 'viewer/:hash/:index', component: ViewerComponent },
   { path: '**', redirectTo: '/upload' },
 ];
 

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ArchiveInformation } from '../../interfaces/archive-information';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,38 +8,12 @@ import { Component } from '@angular/core';
 })
 export class DashboardComponent {
   loading = true;
-  components: any;
+  archives: ArchiveInformation[] = [];
 
-  constructor() {
-    setTimeout(() => {
-      this.loading = false;
-      this.components = [
-        {
-          title: "Bauteil",
-          description: "Beschreigung?",
-          size: "xxMB",
-          date: new Date(),
-          partCount: 10,
-          id: "xxx"
-        },
-        {
-          title: "Bauteil2",
-          description: "Beschreigung?",
-          size: "xxxMB",
-          date: new Date(),
-          partCount: 3,
-          id: "yyy"
-        },
-        {
-          title: "Bauteil2",
-          description: "Beschreigung?",
-          size: "xxxMB",
-          date: new Date(),
-          partCount: 3,
-          id: "zzz"
-        },
-      ];
+  constructor() {}
 
-    }, 400)
+  ngOnInit() {
+    // add api call
+    this.loading = false;
   }
 }

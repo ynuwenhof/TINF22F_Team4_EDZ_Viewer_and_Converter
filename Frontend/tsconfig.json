@@ -12,6 +12,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
+    "strictPropertyInitialization": false,
     "declaration": false,
     "experimentalDecorators": true,
     "moduleResolution": "node",

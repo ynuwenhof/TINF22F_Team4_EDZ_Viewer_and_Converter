@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ArchiveInformation } from '../../interfaces/archive-information';
 
 @Component({
   selector: 'app-card',
@@ -6,11 +7,6 @@ import { Component, Input } from '@angular/core';
   styleUrl: './card.component.scss'
 })
 export class CardComponent {
-  @Input({ required: true }) title!: string;
-  @Input({ required: true }) description!: string;
-  @Input({ required: true }) size!: string;
-  @Input({ required: true }) partCount!: number;
-  @Input({ required: true }) date!: Date;
-  @Input({ required: true }) componentID!: string;
+  @Input({ required: true }) archive!: ArchiveInformation;
 }
 

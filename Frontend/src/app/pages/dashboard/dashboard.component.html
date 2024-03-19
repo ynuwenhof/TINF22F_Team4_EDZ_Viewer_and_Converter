@@ -3,12 +3,10 @@
         <span class="visually-hidden">Loading...</span>
     </div>
 
-    <div *ngIf="!loading && components.length === 0">
+    <div *ngIf="!loading && archives.length === 0">
         <h3 class="text-center">Keine Objekte Vorhanden</h3>
         <span>Klicken Sie <a routerLink="/upload">hier</a> um eine neue Datei hochzuladen</span>
     </div>
 
-    <app-card *ngFor="let component of components" [title]="component.title" [description]="component.description" [size]="component.size"
-        [partCount]="component.partCount" [size]="component.size" [date]="component.date" [componentID]="component.id">
-    </app-card>
+    <app-card *ngFor="let archive of archives" [archive]="archive"></app-card>
 </div>

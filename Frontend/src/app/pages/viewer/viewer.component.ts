@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { PackageInformation } from '../../interfaces/package-information';
+import { ArchiveInformation } from '../../interfaces/archive-information';
 
 @Component({
   selector: 'app-viewer',
@@ -8,26 +10,18 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ViewerComponent {
   loading = true;
-  component: any;
+  archive: ArchiveInformation;
+  package: PackageInformation;
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      const componentID = params['componentID'];
-      const partID = +params['partID'];
+      const hash = params['hash'];
+      const index = +params['index'];
 
-      // REPLACE WITH API REQUEST
-
-      this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-        this.component = {
-          id: componentID,
-          part: partID,
-          partCount: 5,
-        };
-      }, 400);
+      // add api call
+      this.loading = false;
     })
   }
 }

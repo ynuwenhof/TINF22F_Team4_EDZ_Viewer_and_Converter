@@ -1,0 +1,31 @@
+{
+    "index": 500,
+    "kind": "part",
+    "name": "HUB.IG2510",
+    "manufacturer": {
+        "email": "hwsmarketing@hubbell.com",
+        "longname": "Hubbell",
+        "state": "United States of America",
+        "name1": "Hubbell Wiring Systems",
+        "shortname": "HUB",
+        "town": "Shelton",
+        "phone": "+1 475 882 4800",
+        "note": "de_DE@Website: http://www.hubbell.com/;en_US@Website: http://www.hubbell.com/;",
+        "ziptown": "06484",
+        "lastchange": "STS / 07.12.2015 15:45:33",
+        "street": "40 Waterview Drive"
+    },
+    "supplier": {
+        "phone": "+1 475 882 4800",
+        "state": "United States of America",
+        "email": "hwsmarketing@hubbell.com",
+        "ziptown": "06484",
+        "longname": "Hubbell",
+        "shortname": "HUB",
+        "town": "Shelton",
+        "lastchange": "STS / 07.12.2015 15:45:33",
+        "name1": "Hubbell Wiring Systems",
+        "note": "de_DE@Website: http://www.hubbell.com/;en_US@Website: http://www.hubbell.com/;",
+        "street": "40 Waterview Drive"
+    }
+}
