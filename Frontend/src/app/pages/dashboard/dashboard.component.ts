@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ArchiveInformation } from '../../interfaces/archive-information';
+import { BackendService } from '../../services/backend.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,10 +11,16 @@ export class DashboardComponent {
   loading = true;
   archives: ArchiveInformation[] = [];
 
-  constructor() {}
+  constructor(private backend: BackendService) {}
 
   ngOnInit() {
-    // add api call
-    this.loading = false;
+    this.backend.getAllArchives().subscribe(hashes => {
+      hashes.forEach(hash => {
+        this.backend.getArchive(hash).subscribe(archive => {
+          this.loading = false;
+          this.archives.push(archive);
+        })
+      })
+    });
   }
 }

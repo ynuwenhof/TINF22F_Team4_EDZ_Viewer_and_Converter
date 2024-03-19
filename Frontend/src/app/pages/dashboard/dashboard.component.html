@@ -8,5 +8,7 @@
         <span>Klicken Sie <a routerLink="/upload">hier</a> um eine neue Datei hochzuladen</span>
     </div>
 
-    <app-card *ngFor="let archive of archives" [archive]="archive"></app-card>
+    <ng-container *ngIf="!loading">
+        <app-card *ngFor="let archive of archives" [archive]="archive"></app-card>
+    </ng-container>
 </div>

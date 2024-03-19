@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PackageInformation } from '../../interfaces/package-information';
 import { ArchiveInformation } from '../../interfaces/archive-information';
+import { BackendService } from '../../services/backend.service';
 
 @Component({
   selector: 'app-viewer',
@@ -13,15 +14,21 @@ export class ViewerComponent {
   archive: ArchiveInformation;
   package: PackageInformation;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private backend: BackendService) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const hash = params['hash'];
       const index = +params['index'];
 
-      // add api call
-      this.loading = false;
+      this.backend.getArchive(hash).subscribe(archive => {
+        this.archive = archive;
+      });
+
+      this.backend.getPackage(hash, index).subscribe(pkg => {
+        this.loading = false;
+        this.package = pkg;
+      });
     })
   }
 }

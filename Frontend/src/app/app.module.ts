@@ -9,6 +9,7 @@ import { NavigationComponent } from './shared/navigation/navigation.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CardComponent } from './shared/card/card.component';
 import { ViewerComponent } from './pages/viewer/viewer.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ViewerComponent } from './pages/viewer/viewer.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RouterOutlet
+    RouterOutlet,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
