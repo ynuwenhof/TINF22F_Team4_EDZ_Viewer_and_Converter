@@ -8,7 +8,7 @@
         <span>Klicken Sie <a routerLink="/dashboard">hier</a> um zum Dashboard zu gelangen</span>
     </div>
 
-    <div *ngIf="!loading && archive && package">
+    <div *ngIf="!loading && archive && package" class="w-100">
         <nav aria-label="Page navigation example" class="position-fixed bottom-0 start-50 translate-middle-x">
             <ul class="pagination">
                 <li  class="page-item" [ngClass]="{'disabled': package.index-1 < 1}">
@@ -26,57 +26,50 @@
         </nav>
 
         <div class="d-flex flex-lg-row flex-column justify-content-md-center justify-content-around">
-            <div class="col-5">
+            <div class="flex-fill">
                 <h3>{{ package.name }}</h3>
     
-                <img class="my-5" src="./assets/placeholder.svg" />
+                <img class="my-5 flex-fill" src="./assets/placeholder.svg" />
             </div>
     
-            <div class="col-7">
-                <h3>Content</h3>
-    
-                <table class="table my-5">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>&#64;mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>&#64;fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>&#64;twitter</td>
-                        </tr>
-                    </tbody>
-                </table>
-    
-                <h4>Documents:</h4>
-                <ul>
-                    <li>Lorem, ipsum dolor sit amet consectetur adipisicing elit. In, sit tempore nemo vel aliquid
-                        asperiores, quisquam dolorem quae doloribus, reiciendis vero fugiat veniam eveniet a atque neque
-                        temporibus velit rem!</li>
-                    <li>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis itaque numquam praesentium?
-                        Minima earum voluptatibus officiis vel hic dolorum dicta, harum porro excepturi molestias
-                        consequuntur natus ducimus, dolor unde commodi.</li>
-                    <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus optio quidem fugit quibusdam culpa
-                        architecto delectus commodi, quo libero molestias incidunt cumque recusandae, beatae dicta odio, sit
-                        tempore sed. Nisi?</li>
-                </ul>
+            <div class="flex-fill">
+                <ng-container *ngIf="package.manufacturer">
+                    <h3>Manufacturer</h3>
+        
+                    <table class="table my-5">
+                        <thead>
+                            <tr>
+                                <th scope="col">First</th>
+                                <th scope="col">Last</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let key of getObjectKeys(package.manufacturer)">
+                                <td>{{ key }}</td>
+                                <td>{{ package.manufacturer[key] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
+
+                <ng-container *ngIf="package.supplier">
+                    <h3>Supplier</h3>
+        
+                    <table class="table my-5">
+                        <thead>
+                            <tr>
+                                <th scope="col">First</th>
+                                <th scope="col">Last</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let key of getObjectKeys(package.supplier)">
+                                <td>{{ key }}</td>
+                                <td>{{ package.supplier[key] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
             </div>
         </div>
     </div>

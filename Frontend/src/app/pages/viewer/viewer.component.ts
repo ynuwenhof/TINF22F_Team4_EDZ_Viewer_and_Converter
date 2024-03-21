@@ -26,9 +26,14 @@ export class ViewerComponent {
       });
 
       this.backend.getPackage(hash, index).subscribe(pkg => {
+        console.log(pkg);
         this.loading = false;
         this.package = pkg;
       });
     })
+  }
+
+  getObjectKeys(obj: any) {
+    return Object.keys(obj);
   }
 }
