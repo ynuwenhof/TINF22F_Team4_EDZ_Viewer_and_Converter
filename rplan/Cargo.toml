@@ -48,3 +48,7 @@ features = ["fs", "macros", "rt-multi-thread", "sync"]
 [dependencies.tokio-util]
 version = "0.7.10"
 features = ["io"]
+
+[dependencies.tower-http]
+version = "0.5.2"
+features = ["compression-gzip", "normalize-path", "trace"]
