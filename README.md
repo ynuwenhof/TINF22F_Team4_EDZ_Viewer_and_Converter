@@ -1,8 +1,13 @@
 POST /samples - upload a sample
+
 GET  /samples - get all uploaded and completed samples
+
 GET  /samples/{sample_id} - get a sample
+
 GET  /samples/{sample_id}/blob - get the root file listing for a sample
+
 GET  /samples/{sample_id}/blob/*path - get a specific file or directory for a sample
+
 GET  /samples/{sample_id}/packages/{package_index} - get a package for a sample
 
 POST /samples
