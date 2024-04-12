@@ -93,7 +93,8 @@ async fn run(cli: Cli) -> error::Result<()> {
     let listener = TcpListener::bind((ctx.cli.addr, ctx.cli.port)).await?;
 
     #[rustfmt::skip]
-        let app = Router::new()
+    let app = Router::new()
+        .route("/", routing::get(index))
         .layer(NormalizePathLayer::trim_trailing_slash())
         .layer(CompressionLayer::new())
         .layer(body_limit)
@@ -108,3 +109,24 @@ async fn run(cli: Cli) -> error::Result<()> {
     Ok(())
 }
 
+// TODO: Remove this in production
+async fn index() -> Html<&'static str> {
+    Html(
+        r#"
+        <!doctype html>
+        <html>
+            <head></head>
+            <body>
+                <form action="/samples" method="post" enctype="multipart/form-data">
+                    <label>
+                        Upload file:
+                        <input type="file" name="file" multiple>
+                    </label>
+
+                    <input type="submit" value="Upload files">
+                </form>
+            </body>
+        </html>
+        "#,
+    )
+}
