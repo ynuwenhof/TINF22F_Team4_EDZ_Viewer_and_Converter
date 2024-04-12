@@ -12,6 +12,14 @@ triplet = "x64-windows-static-md"
 dependencies = ["libarchive"]
 
 [dependencies]
+futures = "0.3.30"
+mime_guess = "2.0.4"
+mongodb = "2.8.2"
+serde_json = "1.0.115"
+tempfile = "3.10.1"
+tower-layer = "0.3.2"
+tracing = "0.1.40"
+tracing-error = "0.2.0"
 
 [dependencies.axum]
 version = "0.7.5"
