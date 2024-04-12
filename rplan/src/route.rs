@@ -78,6 +78,25 @@ pub async fn get_samples(State(ctx): State<Context>) -> error::Result<Response> 
     Ok((StatusCode::OK, Json(samples)).into_response())
 }
 
+pub async fn get_sample(
+    State(ctx): State<Context>,
+    extract::Path(sample_hash): extract::Path<String>,
+) -> error::Result<Response> {
+    let sample = ctx.db.find_sample(&sample_hash).await?;
+    if let Some(sample) = sample {
+        let sample = SampleResponse::from(sample);
+        return Ok((StatusCode::OK, Json(sample)).into_response());
+    }
+
+    let task = ctx.queue.get_task(sample_hash).await;
+    if let Some(task) = task {
+        let sample = SampleResponse::from(task);
+        return Ok((StatusCode::OK, Json(sample)).into_response());
+    }
+
+    Ok(StatusCode::NOT_FOUND.into_response())
+}
+
 fn write_to_file(buf: Bytes) -> error::Result<(File, String)> {
     let mut hasher = Hasher::new();
     hasher.update_rayon(&buf);

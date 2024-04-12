@@ -97,6 +97,7 @@ async fn run(cli: Cli) -> error::Result<()> {
     let app = Router::new()
         .route("/", routing::get(index))
         .route("/samples", routing::get(route::get_samples).post(route::create_sample))
+        .route("/samples/:sample_hash", routing::get(route::get_sample))
         .layer(NormalizePathLayer::trim_trailing_slash())
         .layer(CompressionLayer::new())
         .layer(body_limit)
