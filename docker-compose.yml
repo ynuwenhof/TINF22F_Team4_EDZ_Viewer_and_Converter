@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  rplan:
+    build:
+      context: .
+    container_name: rplan
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Berlin
+      RUST_LOG: debug
+      RPLAN_URL: http://127.0.0.1
+      RPLAN_MONGODB_URI: "mongodb://rplan-mongo:27017"
+    volumes:
+      - rplan-data:/data
+    networks:
+      - rplan
+      - caddy
+  mongo:
+    image: mongo
+    container_name: rplan-mongo
+    restart: unless-stopped
+    command: ["--replSet", "rs0"]
+    volumes:
+      - rplan-mongo-data:/data/db
+      - rplan-mongo-config:/data/configdb
+    networks:
+      - rplan
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'rplan-mongo:27017'}]}) }" | mongosh --port 27017 --quiet
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      retries: 30
+volumes:
+  rplan-data:
+    name: rplan-data
+  rplan-mongo-data:
+    name: rplan-mongo-data
+  rplan-mongo-config:
+    name: rplan-mongo-config
+networks:
+  rplan:
+    name: rplan
+  caddy:
+    external: true
