@@ -17,6 +17,10 @@ dependencies = ["libarchive"]
 version = "0.7.5"
 features = ["multipart"]
 
+[dependencies.blake3]
+version = "1.5.1"
+features = ["rayon"]
+
 [dependencies.tokio]
 version = "1.36.0"
 features = ["fs", "macros", "rt-multi-thread", "sync"]
