@@ -13,6 +13,10 @@ dependencies = ["libarchive"]
 
 [dependencies]
 
+[dependencies.axum]
+version = "0.7.5"
+features = ["multipart"]
+
 [dependencies.tokio]
 version = "1.36.0"
 features = ["fs", "macros", "rt-multi-thread", "sync"]
