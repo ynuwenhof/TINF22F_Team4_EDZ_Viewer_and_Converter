@@ -7,9 +7,25 @@ mod model;
 mod queue;
 mod trace_layer;
 
+use self::analyzer::Analyzer;
+use self::context::Context;
+use self::db::Database;
+use self::trace_layer::{MakeSpan, OnFailure};
+use axum::extract::{DefaultBodyLimit, Request};
+use axum::response::Html;
+use axum::{routing, Router, ServiceExt};
 use clap::Parser;
+use mongodb::Client;
 use std::net::IpAddr;
 use std::path::PathBuf;
+use std::process::ExitCode;
+use tokio::net::TcpListener;
+use tokio::runtime;
+use tower_http::compression::CompressionLayer;
+use tower_http::normalize_path::NormalizePathLayer;
+use tower_http::trace::TraceLayer;
+use tower_layer::Layer;
+use tracing::error;
 use url::Url;
 
 #[derive(Parser)]
@@ -42,8 +58,53 @@ fn install_tracing() {
         .init();
 }
 
-fn main() {
+fn main() -> ExitCode {
     let cli = Cli::parse();
 
     install_tracing();
+
+    if let Err(e) = runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .expect("failed building the runtime")
+        .block_on(run(cli))
+    {
+        error!("{e}");
+        return ExitCode::FAILURE;
+    }
+
+    ExitCode::SUCCESS
 }
+
+async fn run(cli: Cli) -> error::Result<()> {
+    let body_limit = DefaultBodyLimit::max(cli.body_limit);
+    let layer = TraceLayer::new_for_http()
+        .make_span_with(MakeSpan)
+        .on_failure(OnFailure);
+
+    let client = Client::with_uri_str(&cli.mongodb_uri).await?;
+    let db = Database::new(client).await?;
+    let ctx = Context::new(cli, db);
+
+    for i in 0..ctx.cli.analyzer_tasks {
+        Analyzer::new(ctx.clone(), i);
+    }
+
+    let listener = TcpListener::bind((ctx.cli.addr, ctx.cli.port)).await?;
+
+    #[rustfmt::skip]
+        let app = Router::new()
+        .layer(NormalizePathLayer::trim_trailing_slash())
+        .layer(CompressionLayer::new())
+        .layer(body_limit)
+        .layer(layer)
+        .with_state(ctx);
+
+    let app = NormalizePathLayer::trim_trailing_slash().layer(app);
+    let app = ServiceExt::<Request>::into_make_service(app);
+
+    axum::serve(listener, app).await?;
+
+    Ok(())
+}
+
