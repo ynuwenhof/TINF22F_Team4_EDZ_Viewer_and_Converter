@@ -18,15 +18,14 @@ export class ViewerComponent {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      const hash = params['hash'];
+      const id = params['id'];
       const index = +params['index'];
 
-      this.backend.getArchive(hash).subscribe(archive => {
+      this.backend.getArchive(id).subscribe(archive => {
         this.archive = archive;
       });
 
-      this.backend.getPackage(hash, index).subscribe(pkg => {
-        console.log(pkg);
+      this.backend.getPackage(id, index).subscribe(pkg => {
         this.loading = false;
         this.package = pkg;
       });
