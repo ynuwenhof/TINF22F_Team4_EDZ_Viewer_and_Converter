@@ -56,3 +56,7 @@ features = ["compression-gzip", "normalize-path", "trace"]
 [dependencies.tracing-subscriber]
 version = "0.3.18"
 features = ["env-filter"]
+
+[dependencies.url]
+version = "2.5.0"
+features = ["serde"]
