@@ -97,18 +97,19 @@ pub async fn get_sample(
     Ok(StatusCode::NOT_FOUND.into_response())
 }
 
-State(ctx): State<Context>,
-extract::Path(sample_hash): extract::Path<String>,
+pub async fn get_blob(
+    State(ctx): State<Context>,
+    extract::Path(sample_hash): extract::Path<String>,
 ) -> error::Result<Response> {
-let sample = ctx.db.find_sample(&sample_hash).await?;
-if sample.is_none() {
-    return Ok(StatusCode::NOT_FOUND.into_response());
-}
+    let sample = ctx.db.find_sample(&sample_hash).await?;
+    if sample.is_none() {
+        return Ok(StatusCode::NOT_FOUND.into_response());
+    }
 
-let sample_path = ctx.cli.data_path.join(&sample_hash);
-let dir_entries = list_dir(&sample_path).await?;
+    let sample_path = ctx.cli.data_path.join(&sample_hash);
+    let dir_entries = list_dir(&sample_path).await?;
 
-Ok((StatusCode::OK, Json(dir_entries)).into_response())
+    Ok((StatusCode::OK, Json(dir_entries)).into_response())
 }
 
 pub async fn get_blob_file(
