@@ -14,7 +14,7 @@ use time::ext::NumericalDuration;
 use time::OffsetDateTime;
 use tokio::io::AsyncReadExt;
 use tokio::{fs, task};
-use tracing::{debug, error, error_span, field, Instrument, Span};
+use tracing::{debug, error_span, field, Instrument, Span};
 
 pub struct Analyzer;
 
