@@ -153,6 +153,50 @@ pub async fn get_blob_file(
     Ok((StatusCode::OK, content_type, body).into_response())
 }
 
+pub async fn get_package(
+    State(ctx): State<Context>,
+    extract::Path((sample_hash, package_index)): extract::Path<(String, usize)>,
+) -> error::Result<Response> {
+    let package = ctx.db.find_package(&sample_hash, package_index).await?;
+    let package = match package {
+        None => return Ok(StatusCode::NOT_FOUND.into_response()),
+        Some(package) => package,
+    };
+
+    let manufacturer = match package.manufacturer_id {
+        None => None,
+        Some(ref id) => Some(ctx.db.find_company(id).await?),
+    }
+        .flatten();
+
+    let supplier = match package.supplier_id {
+        None => None,
+        Some(ref id) => Some(ctx.db.find_company(id).await?),
+    }
+        .flatten();
+
+    let image_url = package.image.map(|image_path| {
+        let image_path = image_path.to_string_lossy();
+        let mut image_url = ctx.cli.url.clone();
+
+        #[rustfmt::skip]
+        image_url.set_path(&format!("samples/{sample_hash}/blob/items/picture/{image_path}"));
+
+        image_url
+    });
+
+    let package = PackageResponse {
+        index: package.index,
+        kind: package.kind,
+        name: package.name,
+        image: image_url,
+        manufacturer: manufacturer.map(|c| c.map),
+        supplier: supplier.map(|c| c.map),
+    };
+
+    Ok((StatusCode::OK, Json(package)).into_response())
+}
+
 fn write_to_file(buf: Bytes) -> error::Result<(File, String)> {
     let mut hasher = Hasher::new();
     hasher.update_rayon(&buf);
@@ -243,6 +287,19 @@ impl From<Sample> for SampleResponse {
 pub struct DirEntryResponse {
     name: String,
     is_dir: bool,
+}
+
+#[derive(Serialize)]
+pub struct PackageResponse {
+    index: usize,
+    kind: String,
+    name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    image: Option<Url>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    manufacturer: Option<HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    supplier: Option<HashMap<String, String>>,
 }
 
 #[derive(Serialize)]

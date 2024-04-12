@@ -100,6 +100,7 @@ async fn run(cli: Cli) -> error::Result<()> {
         .route("/samples/:sample_hash", routing::get(route::get_sample))
         .route("/samples/:sample_hash/blob", routing::get(route::get_blob))
         .route("/samples/:sample_hash/blob/*path", routing::get(route::get_blob_file))
+        .route("/samples/:sample_hash/packages/:package_index", routing::get(route::get_package))
         .layer(NormalizePathLayer::trim_trailing_slash())
         .layer(CompressionLayer::new())
         .layer(body_limit)
