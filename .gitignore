@@ -11,6 +11,10 @@
 npm-debug.log
 yarn-error.log
 
+# Rust
+/target/
+**/*.rs.bk
+
 # IDEs and editors
 .idea/
 .project
