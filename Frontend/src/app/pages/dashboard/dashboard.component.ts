@@ -14,13 +14,11 @@ export class DashboardComponent {
   constructor(private backend: BackendService) {}
 
   ngOnInit() {
-    this.backend.getAllArchives().subscribe(hashes => {
-      hashes.forEach(hash => {
-        this.backend.getArchive(hash).subscribe(archive => {
-          this.loading = false;
-          this.archives.push(archive);
-        })
-      })
+    this.backend.getAllArchives().subscribe(archives => {
+      for (const archive of archives) {
+        this.loading = false;
+        this.archives.push(archive);
+      }
     });
   }
 }

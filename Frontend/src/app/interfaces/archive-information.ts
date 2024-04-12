@@ -1,8 +1,9 @@
 export interface ArchiveInformation {
-    hash: string,
+    id: string,
     name: string,
     size: number,
-    packages: number,
     created: number,
-    expires: number
+    status: string,
+    packages?: number,
+    expires?: number
 }

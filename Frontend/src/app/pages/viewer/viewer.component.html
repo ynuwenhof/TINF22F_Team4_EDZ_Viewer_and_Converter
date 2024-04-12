@@ -8,17 +8,17 @@
         <span>Klicken Sie <a routerLink="/dashboard">hier</a> um zum Dashboard zu gelangen</span>
     </div>
 
-    <div *ngIf="!loading && archive && package" class="w-100">
+    <div *ngIf="!loading && archive.status == 'completed' && package" class="w-100">
         <nav aria-label="Page navigation example" class="position-fixed bottom-0 start-50 translate-middle-x">
             <ul class="pagination">
                 <li  class="page-item" [ngClass]="{'disabled': package.index-1 < 1}">
-                    <a class="page-link" aria-label="Previous" [routerLink]="['/viewer', archive.hash, package.index-1]">
+                    <a class="page-link" aria-label="Previous" [routerLink]="['/viewer', archive.id, package.index-1]">
                         <span aria-hidden="true">&laquo; Zurück</span>
                     </a>
                 </li>
                 <li class="page-item"><a class="page-link active">Bauteil {{ package.index }}</a></li>
-                <li class="page-item" [ngClass]="{'disabled': package.index+1 > archive.packages}">
-                    <a class="page-link" aria-label="Next" [routerLink]="['/viewer', archive.hash, package.index+1]">
+                <li class="page-item" [ngClass]="{'disabled': package.index+1 > archive.packages!}">
+                    <a class="page-link" aria-label="Next" [routerLink]="['/viewer', archive.id, package.index+1]">
                         <span aria-hidden="true">Weiter &raquo;</span>
                     </a>
                 </li>
@@ -29,7 +29,7 @@
             <div class="flex-fill">
                 <h3>{{ package.name }}</h3>
     
-                <img class="my-5 flex-fill" src="./assets/placeholder.svg" />
+                <img class="my-5 flex-fill" src="{{ package.image }}" alt="" />
             </div>
     
             <div class="flex-fill">
