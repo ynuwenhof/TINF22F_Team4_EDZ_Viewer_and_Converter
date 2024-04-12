@@ -5,6 +5,7 @@ mod edz;
 mod error;
 mod model;
 mod queue;
+mod route;
 mod trace_layer;
 
 use self::analyzer::Analyzer;
@@ -95,6 +96,7 @@ async fn run(cli: Cli) -> error::Result<()> {
     #[rustfmt::skip]
     let app = Router::new()
         .route("/", routing::get(index))
+        .route("/samples", routing::post(route::create_sample))
         .layer(NormalizePathLayer::trim_trailing_slash())
         .layer(CompressionLayer::new())
         .layer(body_limit)
