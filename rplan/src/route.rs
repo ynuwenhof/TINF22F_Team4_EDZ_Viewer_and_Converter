@@ -97,6 +97,47 @@ pub async fn get_sample(
     Ok(StatusCode::NOT_FOUND.into_response())
 }
 
+pub async fn get_blob_file(
+    State(ctx): State<Context>,
+    extract::Path((sample_hash, path)): extract::Path<(String, String)>,
+) -> error::Result<Response> {
+    use tokio::fs::File;
+
+    let sample = ctx.db.find_sample(&sample_hash).await?;
+    if sample.is_none() {
+        return Ok(StatusCode::NOT_FOUND.into_response());
+    }
+
+    let path = Path::new(&path);
+    let invalid_component = path
+        .components()
+        .any(|c| !matches!(c, Component::Normal(_)));
+
+    if invalid_component {
+        return Ok(StatusCode::NOT_FOUND.into_response());
+    }
+
+    let file_path = ctx.cli.data_path.join(&sample_hash).join(path);
+    if file_path.is_dir() {
+        let dir_entries = list_dir(&file_path).await?;
+        return Ok((StatusCode::OK, Json(dir_entries)).into_response());
+    }
+
+    let file = match File::open(&file_path).await {
+        Ok(file) => file,
+        Err(_) => return Ok(StatusCode::NOT_FOUND.into_response()),
+    };
+
+    let content_type = mime_guess::from_path(&file_path)
+        .first_raw()
+        .map(|s| [(header::CONTENT_TYPE, s)]);
+
+    let stream = ReaderStream::new(file);
+    let body = Body::from_stream(stream);
+
+    Ok((StatusCode::OK, content_type, body).into_response())
+}
+
 fn write_to_file(buf: Bytes) -> error::Result<(File, String)> {
     let mut hasher = Hasher::new();
     hasher.update_rayon(&buf);
@@ -108,6 +149,32 @@ fn write_to_file(buf: Bytes) -> error::Result<(File, String)> {
     temp_file.write_all(&buf)?;
 
     Ok((temp_file, file_hash))
+}
+
+async fn list_dir<P: AsRef<Path>>(path: P) -> error::Result<Vec<DirEntryResponse>> {
+    let mut dir = fs::read_dir(path).await?;
+    let mut dir_entries = Vec::new();
+
+    while let Some(entry) = dir.next_entry().await? {
+        let file_name = match entry.file_name().into_string() {
+            Ok(file_name) => file_name,
+            Err(_) => continue,
+        };
+
+        let file_type = entry.file_type().await?;
+        if !file_type.is_dir() && !file_type.is_file() {
+            continue;
+        }
+
+        let entry = DirEntryResponse {
+            name: file_name,
+            is_dir: file_type.is_dir(),
+        };
+
+        dir_entries.push(entry);
+    }
+
+    Ok(dir_entries)
 }
 
 #[derive(Serialize)]
@@ -155,6 +222,12 @@ impl From<Sample> for SampleResponse {
             status: StatusResponse::Completed(completed),
         }
     }
+}
+
+#[derive(Serialize)]
+pub struct DirEntryResponse {
+    name: String,
+    is_dir: bool,
 }
 
 #[derive(Serialize)]
