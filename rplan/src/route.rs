@@ -66,6 +66,18 @@ pub async fn create_sample(
     Ok((StatusCode::CREATED, Json(sample)).into_response())
 }
 
+pub async fn get_samples(State(ctx): State<Context>) -> error::Result<Response> {
+    let samples: Vec<SampleResponse> = ctx
+        .db
+        .find_samples()
+        .await?
+        .into_iter()
+        .map(SampleResponse::from)
+        .collect();
+
+    Ok((StatusCode::OK, Json(samples)).into_response())
+}
+
 fn write_to_file(buf: Bytes) -> error::Result<(File, String)> {
     let mut hasher = Hasher::new();
     hasher.update_rayon(&buf);

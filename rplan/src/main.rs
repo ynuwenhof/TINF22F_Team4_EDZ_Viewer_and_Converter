@@ -96,7 +96,7 @@ async fn run(cli: Cli) -> error::Result<()> {
     #[rustfmt::skip]
     let app = Router::new()
         .route("/", routing::get(index))
-        .route("/samples", routing::post(route::create_sample))
+        .route("/samples", routing::get(route::get_samples).post(route::create_sample))
         .layer(NormalizePathLayer::trim_trailing_slash())
         .layer(CompressionLayer::new())
         .layer(body_limit)
