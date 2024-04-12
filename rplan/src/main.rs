@@ -1,8 +1,4 @@
-use std::net::IpAddr;
-use std::path::PathBuf;
-use clap::Parser;
-use url::Url;
-
+mod analyzer;
 mod context;
 mod db;
 mod edz;
@@ -10,6 +6,11 @@ mod error;
 mod model;
 mod queue;
 mod trace_layer;
+
+use clap::Parser;
+use std::net::IpAddr;
+use std::path::PathBuf;
+use url::Url;
 
 #[derive(Parser)]
 struct Cli {
