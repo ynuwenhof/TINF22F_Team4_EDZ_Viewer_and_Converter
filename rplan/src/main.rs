@@ -30,6 +30,20 @@ struct Cli {
     data_path: PathBuf,
 }
 
+fn install_tracing() {
+    use tracing_error::ErrorLayer;
+    use tracing_subscriber::prelude::*;
+    use tracing_subscriber::{fmt, EnvFilter};
+
+    tracing_subscriber::registry()
+        .with(fmt::layer().with_target(false))
+        .with(EnvFilter::from_default_env())
+        .with(ErrorLayer::default())
+        .init();
+}
+
 fn main() {
-    println!("Hello, world!");
+    let cli = Cli::parse();
+
+    install_tracing();
 }
