@@ -1,7 +1,54 @@
+use super::error;
 use std::collections::VecDeque;
 use std::fs::File;
 use time::OffsetDateTime;
-use tokio::sync::oneshot;
+use tokio::sync::{mpsc, oneshot};
+use tokio::task;
+
+pub struct Queue {
+    tx: mpsc::Sender<Message>,
+}
+
+impl Queue {
+    pub fn new() -> Self {
+        let (tx, rx) = mpsc::channel(8);
+
+        task::spawn(task(rx));
+
+        Self { tx }
+    }
+
+    pub async fn get_task(&self, task_hash: String) -> Option<Task> {
+        let (tx, rx) = oneshot::channel();
+        let msg = Message::GetTask(task_hash, tx);
+        let _ = self.tx.send(msg).await;
+        rx.await.ok().flatten()
+    }
+
+    pub async fn push_entry(&self, entry: Entry) -> error::Result<Task> {
+        let (tx, rx) = oneshot::channel();
+        let msg = Message::PushEntry(entry, tx);
+        let _ = self.tx.send(msg).await;
+        Ok(rx.await?)
+    }
+
+    pub async fn push_analyzer(&self) -> error::Result<Entry> {
+        let (tx, rx) = oneshot::channel();
+        let msg = Message::PushAnalyzer(tx);
+        let _ = self.tx.send(msg).await;
+        Ok(rx.await?)
+    }
+
+    pub async fn remove_task(&self, task_hash: String) {
+        let msg = Message::RemoveTask(task_hash);
+        let _ = self.tx.send(msg).await;
+    }
+
+    pub async fn set_status(&self, task_hash: String, status: Status) {
+        let msg = Message::SetStatus(task_hash, status);
+        let _ = self.tx.send(msg).await;
+    }
+}
 
 pub struct Entry {
     pub task: Task,
@@ -22,6 +69,26 @@ pub enum Status {
     Pending,
     Running,
     Failed,
+}
+
+async fn task(mut rx: mpsc::Receiver<Message>) {
+    let mut queue = QueueInner::default();
+
+    while let Some(msg) = rx.recv().await {
+        match msg {
+            Message::GetTask(task_hash, tx) => {
+                let task = queue.get_task(&task_hash);
+                let _ = tx.send(task.cloned());
+            }
+            Message::PushEntry(entry, tx) => {
+                let task = queue.push_entry(entry);
+                let _ = tx.send(task);
+            }
+            Message::PushAnalyzer(tx) => queue.push_analyzer(tx),
+            Message::RemoveTask(task_hash) => queue.remove_task(&task_hash),
+            Message::SetStatus(task_hash, status) => queue.set_status(&task_hash, status),
+        }
+    }
 }
 
 #[derive(Default)]
@@ -83,4 +150,12 @@ impl QueueInner {
             task.status = status;
         }
     }
+}
+
+enum Message {
+    GetTask(String, oneshot::Sender<Option<Task>>),
+    PushEntry(Entry, oneshot::Sender<Task>),
+    PushAnalyzer(oneshot::Sender<Entry>),
+    RemoveTask(String),
+    SetStatus(String, Status),
 }
