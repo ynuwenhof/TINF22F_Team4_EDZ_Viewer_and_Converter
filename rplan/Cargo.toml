@@ -37,6 +37,10 @@ features = ["time-0_3"]
 version = "4.5.2"
 features = ["derive", "env"]
 
+[dependencies.libarchive]
+package = "compress-tools"
+version = "0.14.3"
+
 [dependencies.quick-xml]
 version = "0.31.0"
 features = ["serialize", "async-tokio"]
