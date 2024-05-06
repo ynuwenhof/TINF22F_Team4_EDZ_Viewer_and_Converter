@@ -49,6 +49,10 @@ features = ["serialize", "async-tokio"]
 version = "1.0.197"
 features = ["derive"]
 
+[dependencies.sevenz]
+package = "sevenz-rust"
+version = "0.6.0"
+
 [dependencies.time]
 version = "0.3.34"
 features = ["serde"]
