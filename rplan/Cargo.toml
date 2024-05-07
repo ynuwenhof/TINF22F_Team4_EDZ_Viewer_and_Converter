@@ -49,10 +49,6 @@ features = ["serialize", "async-tokio"]
 version = "1.0.197"
 features = ["derive"]
 
-[dependencies.sevenz]
-package = "sevenz-rust"
-version = "0.6.0"
-
 [dependencies.time]
 version = "0.3.34"
 features = ["serde"]
@@ -76,3 +72,8 @@ features = ["env-filter"]
 [dependencies.url]
 version = "2.5.0"
 features = ["serde"]
+
+[dependencies.zip]
+version = "1.2.1"
+default-features = false
+features = ["deflate"]
