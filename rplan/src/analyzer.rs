@@ -158,6 +158,7 @@ async fn analyze<P: AsRef<Path>>(ctx: &Context, entry: Entry, path: P) -> error:
                     package.image = Some(relative_img_path);
                 }
                 Item::Unknown => {}
+                _ => {}
             }
         }
 
