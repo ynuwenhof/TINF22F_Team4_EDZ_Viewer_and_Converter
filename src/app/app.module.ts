@@ -10,6 +10,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CardComponent } from './shared/card/card.component';
 import { ViewerComponent } from './pages/viewer/viewer.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FileViewerComponent } from './pages/file-viewer/file-viewer.component';
+import { AccordionComponent } from './shared/accordion/accordion.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { HttpClientModule } from '@angular/common/http';
     NavigationComponent,
     DashboardComponent,
     CardComponent,
-    ViewerComponent
+    ViewerComponent,
+    FileViewerComponent,
+    AccordionComponent
   ],
   imports: [
     BrowserModule,

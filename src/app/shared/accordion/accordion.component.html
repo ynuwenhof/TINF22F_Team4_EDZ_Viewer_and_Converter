@@ -1,0 +1,9 @@
+<button *ngIf="item.is_dir" [ngClass]="children.length > 0 ? 'open' : ''" class="accordion-dir"
+  (click)="onClick(item)"> {{ item.name }}</button>
+
+<button *ngIf="!item.is_dir" class="accordion-file" (click)="onClick(item)">{{ item.name }}</button>
+
+<div [style.margin-left.px]="level+1 * 22">
+  <app-accordion *ngFor="let child of children" [level]="level+1" [item]="child" [id]="id" [rootDir]="rootDir + item.name + '/'"
+    (itemClicked)="itemClicked.emit($event)"></app-accordion>
+</div>

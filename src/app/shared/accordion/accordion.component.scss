@@ -1,0 +1,15 @@
+button {
+    border: none;
+    background-color: inherit;
+    display: block;
+    padding: 0.2rem 0;
+}
+
+.accordion-dir:before {
+    display: inline-block;
+    content: "›";
+}
+
+.open.accordion-dir:before {
+    transform: rotate(90deg);
+}

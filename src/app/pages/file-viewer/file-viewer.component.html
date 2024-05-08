@@ -1,0 +1,28 @@
+<div class="container my-5 d-flex justify-content-center">
+    <div *ngIf="loading" class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+
+    <div *ngIf="!loading && !data">
+        <h3 class="text-center">Dieses Bauteil existiert nicht!</h3>
+        <span>Klicken Sie <a routerLink="/dashboard">hier</a> um zum Dashboard zu gelangen</span>
+    </div>
+
+    <div *ngIf="!loading && data" class="w-100" style="height: 80vh;">
+        <div class="d-flex flex-lg-row flex-column justify-content-md-center justify-content-around h-100 border">
+            <div class="overflow-scroll p-2" style="width: 30%">
+                <h4>EXPLORER</h4>
+                
+                <app-accordion *ngFor="let item of data"  [level]="0" [item]="item" [id]="id" [rootDir]="'/'" (itemClicked)="handleItemClick($event)"></app-accordion>
+            </div>
+    
+            <div class="overflow-scroll w-100 p-2 border-start">
+                <h4>VIEWER</h4>
+
+                <span *ngIf="loadingPreview">Loading...</span>
+                <img *ngIf="previewImage" [src]="previewImage" alt="Preview">
+                {{ previewData }}
+            </div>
+        </div>
+    </div>
+</div>
