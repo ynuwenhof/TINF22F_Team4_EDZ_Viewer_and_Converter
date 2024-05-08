@@ -12,6 +12,7 @@ import { ViewerComponent } from './pages/viewer/viewer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FileViewerComponent } from './pages/file-viewer/file-viewer.component';
 import { AccordionComponent } from './shared/accordion/accordion.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { AccordionComponent } from './shared/accordion/accordion.component';
     HttpClientModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }
