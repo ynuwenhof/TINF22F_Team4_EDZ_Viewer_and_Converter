@@ -8,7 +8,6 @@ services:
     environment:
       TZ: Europe/Berlin
       RUST_LOG: debug
-      RPLAN_URL: http://127.0.0.1
       RPLAN_MONGODB_URI: "mongodb://rplan-mongo:27017"
     volumes:
       - rplan-data:/data
