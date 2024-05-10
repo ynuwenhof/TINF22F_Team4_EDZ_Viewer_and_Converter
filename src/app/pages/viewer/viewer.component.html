@@ -16,7 +16,7 @@
                         <span aria-hidden="true">&laquo; Zurück</span>
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link active">Bauteil {{ package.index }}</a></li>
+                <li class="page-item"><a class="page-link active">Bauteil {{ package.index + 1 }}</a></li>
                 <li class="page-item" [ngClass]="{'disabled': package.index+1 > archive.packages!}">
                     <a class="page-link" aria-label="Next" [routerLink]="['/viewer', archive.id, package.index+1]">
                         <span aria-hidden="true">Weiter &raquo;</span>

@@ -35,4 +35,21 @@ export class BackendService {
       })
     });
   }
+
+  getExplorerLevel(id: string, path: string): Observable<any> {
+    const fileExtension = path.split('.').pop();
+
+    console.log(fileExtension)
+    if (fileExtension === 'xml' || fileExtension === 'ema')
+      return this.http.get<any>(this.apiUrl + 'samples/' + id + '/blob' + path, { responseType: 'text' as 'json' });
+
+    if (fileExtension === 'jpg' || fileExtension === 'png')
+      return this.http.get<any>(this.apiUrl + 'samples/' + id + '/blob' + path, { responseType: 'blob' as 'json' });
+
+    return this.http.get<any>(this.apiUrl + 'samples/' + id + '/blob' + path, { responseType: 'json' });
+  }
+
+  getImageUrl(id: string, path: string): string {
+    return this.apiUrl + 'samples/' + id + '/blob' + path;
+  }
 }

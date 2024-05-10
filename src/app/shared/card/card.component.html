@@ -9,6 +9,7 @@
       <li class="list-group-item">Hochgeladen am {{ archive.created }}</li>
     </ul>
     <div class="card-body">
-      <a class="btn btn-primary" [routerLink]="['/viewer', archive.id, 0]">Anzeigen</a>
+      <a class="btn btn-primary me-3" [routerLink]="['/viewer', archive.id, 0]">Übersicht</a>
+      <a class="card-link" [routerLink]="['/files', archive.id]">Dateien</a>
     </div>
   </div>
