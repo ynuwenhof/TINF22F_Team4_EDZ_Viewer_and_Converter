@@ -27,7 +27,6 @@ use tower_http::normalize_path::NormalizePathLayer;
 use tower_http::trace::TraceLayer;
 use tower_layer::Layer;
 use tracing::error;
-use url::Url;
 
 #[derive(Parser)]
 struct Cli {
@@ -39,8 +38,6 @@ struct Cli {
     body_limit: usize,
     #[arg(long, env = "RPLAN_ANALYZER_TASKS", value_parser = clap::value_parser!(u8).range(1..), default_value_t = 3)]
     analyzer_tasks: u8,
-    #[arg(short, long, env = "RPLAN_URL")]
-    url: Url,
     #[arg(short, long, env = "RPLAN_MONGODB_URI", default_value_t = String::from("mongodb://localhost:27017"))]
     mongodb_uri: String,
     #[arg(short, long, env = "RPLAN_DATA_PATH", value_name = "DIRECTORY")]
@@ -98,6 +95,7 @@ async fn run(cli: Cli) -> error::Result<()> {
         .route("/", routing::get(index))
         .route("/samples", routing::get(route::get_samples).post(route::create_sample))
         .route("/samples/:sample_hash", routing::get(route::get_sample))
+        .route("/samples/:sample_hash/aasx", routing::get(route::get_aasx))
         .route("/samples/:sample_hash/blob", routing::get(route::get_blob))
         .route("/samples/:sample_hash/blob/*path", routing::get(route::get_blob_file))
         .route("/samples/:sample_hash/packages/:package_index", routing::get(route::get_package))

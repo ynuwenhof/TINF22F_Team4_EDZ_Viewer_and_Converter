@@ -1,3 +1,4 @@
+use super::edz::{PartContainer, PointContainer};
 use super::error;
 use super::model::{Company, Package, Sample};
 use bson::oid::ObjectId;
@@ -12,6 +13,8 @@ pub struct Database {
     samples: Collection<Sample>,
     packages: Collection<Package>,
     companies: Collection<Company>,
+    parts: Collection<PartContainer>,
+    points: Collection<PointContainer>,
 }
 
 impl Database {
@@ -20,6 +23,8 @@ impl Database {
         let samples = db.collection("samples");
         let packages = db.collection("packages");
         let companies = db.collection("companies");
+        let parts = db.collection("parts");
+        let points = db.collection("points");
 
         let options = IndexOptions::builder().unique(true).build();
         let index = IndexModel::builder()
@@ -34,6 +39,8 @@ impl Database {
             samples,
             packages,
             companies,
+            parts,
+            points,
         })
     }
 
@@ -76,6 +83,28 @@ impl Database {
         Ok(())
     }
 
+    pub async fn insert_part_with_session(
+        &self,
+        part: &PartContainer,
+        session: &mut ClientSession,
+    ) -> error::Result<()> {
+        self.parts
+            .insert_one_with_session(part, None, session)
+            .await?;
+        Ok(())
+    }
+
+    pub async fn insert_point_with_session(
+        &self,
+        point: &PointContainer,
+        session: &mut ClientSession,
+    ) -> error::Result<()> {
+        self.points
+            .insert_one_with_session(point, None, session)
+            .await?;
+        Ok(())
+    }
+
     pub async fn find_samples(&self) -> error::Result<Vec<Sample>> {
         Ok(self.samples.find(None, None).await?.try_collect().await?)
     }
@@ -103,5 +132,13 @@ impl Database {
 
     pub async fn find_company(&self, id: &ObjectId) -> error::Result<Option<Company>> {
         Ok(self.companies.find_one(doc!("_id": id), None).await?)
+    }
+
+    pub async fn find_part(&self, id: &ObjectId) -> error::Result<Option<PartContainer>> {
+        Ok(self.parts.find_one(doc!("_id": id), None).await?)
+    }
+
+    pub async fn find_point(&self, id: &ObjectId) -> error::Result<Option<PointContainer>> {
+        Ok(self.points.find_one(doc!("_id": id), None).await?)
     }
 }
