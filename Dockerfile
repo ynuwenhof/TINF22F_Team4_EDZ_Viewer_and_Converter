@@ -4,6 +4,9 @@ RUN apk add --no-cache musl-dev pkgconfig libarchive-dev
 ENV PKG_CONFIG_PATH=/usr/lib/pkgconfig/ \
     RUSTFLAGS="-C target-feature=-crt-static"
 
+WORKDIR /usr/src/assets
+COPY ./assets .
+
 WORKDIR /usr/src/rplan
 COPY ./rplan .
 RUN cargo install --path .

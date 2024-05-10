@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<aas:aasenv xmlns:IEC="http://www.admin-shell.io/IEC61360/2/0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:abac="http://www.admin-shell.io/aas/abac/2/0"
+            xsi:schemaLocation="http://www.admin-shell.io/aas/2/0 AAS.xsd http://www.admin-shell.io/IEC61360/2/0 IEC61360.xsd"
+            xmlns:aas="http://www.admin-shell.io/aas/2/0">
+    <aas:assetAdministrationShells>
+        <aas:assetAdministrationShell>
+            <aas:idShort>{{name}}</aas:idShort>
+            <aas:category>CONSTANT</aas:category>
+            <aas:submodelRefs>
+            {{#each packages as |package|}}
+                <aas:submodelRef>
+                    <aas:keys>
+                        <aas:key type="Submodel" local="true" idType="IRI">https://example.org/{{package.name}}</aas:key></aas:keys>
+                </aas:submodelRef>
+            {{/each}}
+            </aas:submodelRefs>
+        </aas:assetAdministrationShell>
+    </aas:assetAdministrationShells>
+    <aas:submodels>
+    {{#each packages as |package|}}
+        <aas:submodel>
+            <aas:idShort>{{package.name}}</aas:idShort>
+            <aas:category>CONSTANT</aas:category>
+            <aas:identification idType="IRI">https://example.org/{{package.name}}</aas:identification>
+            <aas:submodelElements>
+            {{#if package.manufacturer}}
+                <aas:submodelElement>
+                    <aas:submodelElementCollection>
+                        <aas:idShort>Manufacturer</aas:idShort>
+                        <aas:category>CONSTANT</aas:category>
+                        <aas:value>
+                        {{#each package.manufacturer}}
+                            <aas:submodelElement>
+                                <aas:property>
+                                    <aas:idShort>{{@key}}</aas:idShort>
+                                    <aas:value>{{this}}</aas:value>
+                                </aas:property>
+                            </aas:submodelElement>
+                        {{/each}}
+                        </aas:value>
+                    </aas:submodelElementCollection>
+                </aas:submodelElement>
+            {{/if}}
+            {{#if package.supplier}}
+                <aas:submodelElement>
+                    <aas:submodelElementCollection>
+                        <aas:idShort>Supplier</aas:idShort>
+                        <aas:category>CONSTANT</aas:category>
+                        <aas:value>
+                        {{#each package.supplier}}
+                            <aas:submodelElement>
+                                <aas:property>
+                                    <aas:idShort>{{@key}}</aas:idShort>
+                                    <aas:value>{{this}}</aas:value>
+                                </aas:property>
+                            </aas:submodelElement>
+                        {{/each}}
+                        </aas:value>
+                    </aas:submodelElementCollection>
+                </aas:submodelElement>
+            {{/if}}
+            {{#if package.part}}
+                <aas:submodelElement>
+                    <aas:submodelElementCollection>
+                        <aas:idShort>Part</aas:idShort>
+                        <aas:category>CONSTANT</aas:category>
+                        <aas:value>
+                            <aas:submodelElement>
+                                <aas:submodelElementCollection>
+                                    <aas:idShort>Variant</aas:idShort>
+                                    <aas:category>CONSTANT</aas:category>
+                                    <aas:value>
+                                    {{#each package.part.variant.function_templates as |function_template|}}
+                                        <aas:submodelElement>
+                                            <aas:submodelElementCollection>
+                                                <aas:idShort>Function Template</aas:idShort>
+                                                <aas:category>CONSTANT</aas:category>
+                                                <aas:value>
+                                                {{#each function_template}}
+                                                    <aas:submodelElement>
+                                                        <aas:property>
+                                                            <aas:idShort>{{@key}}</aas:idShort>
+                                                            <aas:value>{{this}}</aas:value>
+                                                        </aas:property>
+                                                    </aas:submodelElement>
+                                                {{/each}}
+                                                </aas:value>
+                                            </aas:submodelElementCollection>
+                                        </aas:submodelElement>
+                                    {{/each}}
+                                    {{#each package.part.variant.attrs}}
+                                        <aas:submodelElement>
+                                            <aas:property>
+                                                <aas:idShort>{{@key}}</aas:idShort>
+                                                <aas:value>{{this}}</aas:value>
+                                            </aas:property>
+                                        </aas:submodelElement>
+                                    {{/each}}
+                                    </aas:value>
+                                </aas:submodelElementCollection>
+                            </aas:submodelElement>
+                        {{#each package.part.free_properties as |free_property|}}
+                            <aas:submodelElement>
+                                <aas:submodelElementCollection>
+                                    <aas:idShort>Free Property</aas:idShort>
+                                    <aas:category>CONSTANT</aas:category>
+                                    <aas:value>
+                                    {{#each free_property}}
+                                        <aas:submodelElement>
+                                            <aas:property>
+                                                <aas:idShort>{{@key}}</aas:idShort>
+                                                <aas:value>{{this}}</aas:value>
+                                            </aas:property>
+                                        </aas:submodelElement>
+                                    {{/each}}
+                                    </aas:value>
+                                </aas:submodelElementCollection>
+                            </aas:submodelElement>
+                        {{/each}}
+                        {{#each package.part.attrs}}
+                            <aas:submodelElement>
+                                <aas:property>
+                                    <aas:idShort>{{@key}}</aas:idShort>
+                                    <aas:value>{{this}}</aas:value>
+                                </aas:property>
+                            </aas:submodelElement>
+                        {{/each}}
+                        </aas:value>
+                    </aas:submodelElementCollection>
+                </aas:submodelElement>
+            {{/if}}
+            {{#if package.point}}
+                <aas:submodelElement>
+                    <aas:submodelElementCollection>
+                        <aas:idShort>Connection Points</aas:idShort>
+                        <aas:category>CONSTANT</aas:category>
+                        <aas:value>
+                        {{#each package.point.terminal_positions as |terminal_position|}}
+                            <aas:submodelElement>
+                                <aas:submodelElementCollection>
+                                    <aas:idShort>Free Property</aas:idShort>
+                                    <aas:category>CONSTANT</aas:category>
+                                    <aas:value>
+                                    {{#each terminal_position}}
+                                        <aas:submodelElement>
+                                            <aas:property>
+                                                <aas:idShort>{{@key}}</aas:idShort>
+                                                <aas:value>{{this}}</aas:value>
+                                            </aas:property>
+                                        </aas:submodelElement>
+                                    {{/each}}
+                                    </aas:value>
+                                    </aas:submodelElementCollection>
+                                </aas:submodelElement>
+                            {{/each}}
+                        {{#each package.part.attrs}}
+                            <aas:submodelElement>
+                                <aas:property>
+                                    <aas:idShort>{{@key}}</aas:idShort>
+                                    <aas:value>{{this}}</aas:value>
+                                </aas:property>
+                            </aas:submodelElement>
+                        {{/each}}
+                        </aas:value>
+                    </aas:submodelElementCollection>
+                </aas:submodelElement>
+            {{/if}}
+            </aas:submodelElements>
+        </aas:submodel>
+    {{/each}}
+    </aas:submodels>
+</aas:aasenv>

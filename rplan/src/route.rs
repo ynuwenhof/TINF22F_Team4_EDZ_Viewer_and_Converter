@@ -2,6 +2,7 @@ use super::context::Context;
 use super::error;
 use super::model::Sample;
 use super::queue::{Entry, Status, Task};
+use crate::edz::{PartContainer, PointContainer};
 use axum::body::{Body, Bytes};
 use axum::extract::{Multipart, State};
 use axum::http::{header, StatusCode};
@@ -19,7 +20,6 @@ use time::OffsetDateTime;
 use tokio::fs;
 use tokio::task;
 use tokio_util::io::ReaderStream;
-use url::Url;
 
 pub async fn create_sample(
     State(ctx): State<Context>,
@@ -97,6 +97,35 @@ pub async fn get_sample(
     Ok(StatusCode::NOT_FOUND.into_response())
 }
 
+pub async fn get_aasx(
+    State(ctx): State<Context>,
+    extract::Path(sample_hash): extract::Path<String>,
+) -> error::Result<Response> {
+    use tokio::fs::File;
+
+    let sample = ctx.db.find_sample(&sample_hash).await?;
+    if sample.is_none() {
+        return Ok(StatusCode::NOT_FOUND.into_response());
+    }
+
+    let file_path = ctx.cli.data_path.join(format!("{sample_hash}.aasx"));
+    let file = match File::open(&file_path).await {
+        Ok(file) => file,
+        Err(_) => return Ok(StatusCode::NOT_FOUND.into_response()),
+    };
+
+    let stream = ReaderStream::new(file);
+    let body = Body::from_stream(stream);
+
+    let file_name = format!(r#"attachment; filename="{}.aasx""#, sample_hash);
+    Ok((
+        StatusCode::OK,
+        [(header::CONTENT_DISPOSITION, file_name)],
+        body,
+    )
+        .into_response())
+}
+
 pub async fn get_blob(
     State(ctx): State<Context>,
     extract::Path(sample_hash): extract::Path<String>,
@@ -167,22 +196,29 @@ pub async fn get_package(
         None => None,
         Some(ref id) => Some(ctx.db.find_company(id).await?),
     }
-        .flatten();
+    .flatten();
 
     let supplier = match package.supplier_id {
         None => None,
         Some(ref id) => Some(ctx.db.find_company(id).await?),
     }
-        .flatten();
+    .flatten();
+
+    let part = match package.part_id {
+        None => None,
+        Some(ref id) => Some(ctx.db.find_part(id).await?),
+    }
+    .flatten();
+
+    let point = match package.point_id {
+        None => None,
+        Some(ref id) => Some(ctx.db.find_point(id).await?),
+    }
+    .flatten();
 
     let image_url = package.image.map(|image_path| {
         let image_path = image_path.to_string_lossy();
-        let mut image_url = ctx.cli.url.clone();
-
-        #[rustfmt::skip]
-        image_url.set_path(&format!("samples/{sample_hash}/blob/items/picture/{image_path}"));
-
-        image_url
+        format!("/items/picture/{image_path}")
     });
 
     let package = PackageResponse {
@@ -192,6 +228,8 @@ pub async fn get_package(
         image: image_url,
         manufacturer: manufacturer.map(|c| c.map),
         supplier: supplier.map(|c| c.map),
+        part,
+        point,
     };
 
     Ok((StatusCode::OK, Json(package)).into_response())
@@ -295,11 +333,15 @@ pub struct PackageResponse {
     kind: String,
     name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    image: Option<Url>,
+    image: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     manufacturer: Option<HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     supplier: Option<HashMap<String, String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    part: Option<PartContainer>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    point: Option<PointContainer>,
 }
 
 #[derive(Serialize)]

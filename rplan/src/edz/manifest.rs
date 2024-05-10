@@ -61,8 +61,10 @@ where
 #[derive(Deserialize)]
 #[serde(tag = "@name", rename_all = "lowercase")]
 pub enum Item {
+    ConnectionPoints(ItemData),
     Manufacturer(ItemData),
     Supplier(ItemData),
+    Part(ItemData),
     PictureFile(ItemData),
     #[serde(other)]
     Unknown,

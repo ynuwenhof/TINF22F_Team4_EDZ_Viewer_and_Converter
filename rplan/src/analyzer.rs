@@ -1,20 +1,24 @@
 use super::context::Context;
-use super::edz::{Address, Item, Manifest};
+use super::edz::{Address, Item, Manifest, PartContainer, PointContainer};
 use super::error::Error;
 use super::model::Sample;
 use super::queue::{Entry, Status};
 use super::{error, model};
 use bson::oid::ObjectId;
+use handlebars::Handlebars;
 use libarchive::Ownership;
+use serde::Serialize;
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::{ErrorKind, Read, Seek};
+use std::io::{Cursor, ErrorKind, Read, Seek, Write};
 use std::path::{Component, Path, PathBuf};
 use time::ext::NumericalDuration;
 use time::OffsetDateTime;
 use tokio::io::AsyncReadExt;
 use tokio::{fs, task};
 use tracing::{debug, error_span, field, Instrument, Span};
+use zip::write::SimpleFileOptions;
+use zip::ZipWriter;
 
 pub struct Analyzer;
 
@@ -93,13 +97,22 @@ async fn analyze<P: AsRef<Path>>(ctx: &Context, entry: Entry, path: P) -> error:
     let xml_path = sample_path.join("items/partxml").canonicalize()?;
     let pic_path = sample_path.join("items/picture").canonicalize()?;
 
+    let mut template = Template {
+        name: entry.task.name.clone(),
+        ..Default::default()
+    };
+
     let mut cache = HashMap::new();
     let mut session = ctx.db.start_session().await?;
 
-    // TODO: Parse part and connection points
     for (i, package) in manifest.packages.into_iter().enumerate() {
         let items = package.items;
         let mut package = model::Package::new(sample_id, i, package.kind, package.name);
+
+        let mut template_package = Package {
+            name: package.name.clone(),
+            ..Default::default()
+        };
 
         for item in items {
             match item {
@@ -115,6 +128,8 @@ async fn analyze<P: AsRef<Path>>(ctx: &Context, entry: Entry, path: P) -> error:
                     let addr = Address::from_file(&absolute_mfr_path).await?;
                     let company = model::Company::new(addr.attributes());
                     package.manufacturer_id = Some(company.id);
+
+                    template_package.manufacturer = Some(company.map.clone());
 
                     ctx.db
                         .insert_company_with_session(&company, &mut session)
@@ -134,10 +149,68 @@ async fn analyze<P: AsRef<Path>>(ctx: &Context, entry: Entry, path: P) -> error:
                     let company = model::Company::new(addr.attributes());
                     package.supplier_id = Some(company.id);
 
+                    template_package.supplier = Some(company.map.clone());
+
                     ctx.db
                         .insert_company_with_session(&company, &mut session)
                         .await?;
                     cache.insert(absolute_supplier_path, company.id);
+                }
+                Item::Part(data) => {
+                    let relative_part_path = normalize_path(&data.path)?;
+                    let absolute_part_path = xml_path.join(&relative_part_path);
+
+                    let part = PartContainer::from_file(&absolute_part_path).await?;
+                    package.part_id = Some(part.id);
+
+                    let var = Variant {
+                        attrs: part.part.variant.attributes.clone(),
+                        function_templates: part
+                            .part
+                            .variant
+                            .function_templates
+                            .iter()
+                            .map(|f| f.0.clone())
+                            .collect(),
+                    };
+
+                    let mut a = part.attributes.clone();
+                    a.extend(part.part.attributes.clone());
+                    template_package.part = Some(Part {
+                        attrs: a,
+                        free_properties: part
+                            .part
+                            .free_properties
+                            .iter()
+                            .map(|f| f.0.clone())
+                            .collect(),
+                        variant: var,
+                    });
+
+                    ctx.db.insert_part_with_session(&part, &mut session).await?;
+                }
+                Item::ConnectionPoints(data) => {
+                    let relative_point_path = normalize_path(&data.path)?;
+                    let absolute_point_path = xml_path.join(&relative_point_path);
+
+                    let point = PointContainer::from_file(&absolute_point_path).await?;
+                    package.point_id = Some(point.id);
+
+                    let mut a = point.attributes.clone();
+                    a.extend(point.terminal.attributes.clone());
+                    template_package.point = Some(Point {
+                        attrs: a,
+                        terminal_positions: point
+                            .terminal
+                            .terminal_positions
+                            .iter()
+                            .map(|t| t.0.clone())
+                            .collect(),
+                    });
+
+                    ctx.db
+                        .insert_point_with_session(&point, &mut session)
+                        .await?;
                 }
                 Item::PictureFile(data) => {
                     let relative_img_path = normalize_path(&data.path)?;
@@ -161,9 +234,16 @@ async fn analyze<P: AsRef<Path>>(ctx: &Context, entry: Entry, path: P) -> error:
             }
         }
 
+        template.packages.push(template_package);
+
         ctx.db
             .insert_package_with_session(&package, &mut session)
             .await?;
+    }
+
+    if let Some(parent) = sample_path.parent() {
+        let aasx_path = parent.join(format!("{}.aasx", entry.task.hash));
+        task::block_in_place(|| convert(&template, &aasx_path))?;
     }
 
     let completed = OffsetDateTime::now_utc();
@@ -223,4 +303,63 @@ fn normalize_path(s: &str) -> error::Result<PathBuf> {
     }
 
     Ok(path)
+}
+
+const TEMPLATE_HBS: &str = include_str!("../../assets/template.hbs");
+const TEMPLATE_AASX: &[u8] = include_bytes!("../../assets/template.aasx");
+
+#[derive(Default, Serialize)]
+struct Template {
+    name: String,
+    packages: Vec<Package>,
+}
+
+#[derive(Default, Serialize)]
+struct Package {
+    name: String,
+    manufacturer: Option<HashMap<String, String>>,
+    supplier: Option<HashMap<String, String>>,
+    part: Option<Part>,
+    point: Option<Point>,
+}
+
+#[derive(Default, Serialize)]
+struct Part {
+    attrs: HashMap<String, String>,
+    free_properties: Vec<HashMap<String, String>>,
+    variant: Variant,
+}
+
+#[derive(Default, Serialize)]
+struct Variant {
+    attrs: HashMap<String, String>,
+    function_templates: Vec<HashMap<String, String>>,
+}
+
+#[derive(Default, Serialize)]
+struct Point {
+    attrs: HashMap<String, String>,
+    terminal_positions: Vec<HashMap<String, String>>,
+}
+
+fn convert<P: AsRef<Path>>(template: &Template, path: P) -> error::Result<()> {
+    use std::fs;
+
+    let handlebars = Handlebars::new();
+    let s = handlebars.render_template(TEMPLATE_HBS, template)?;
+
+    let buf = TEMPLATE_AASX.to_vec();
+    let cur = Cursor::new(buf);
+
+    let mut zip = ZipWriter::new_append(cur)?;
+    let options = SimpleFileOptions::default();
+
+    let name =
+        "aasx/AssetAdministrationShell---10A74E49/AssetAdministrationShell---10A74E49.aas.xml";
+    zip.start_file(name, options)?;
+    zip.write_all(s.as_bytes())?;
+    let buf = zip.finish()?;
+
+    fs::write(path, buf.into_inner())?;
+    Ok(())
 }
