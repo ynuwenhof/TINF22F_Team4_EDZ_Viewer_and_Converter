@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, from, map, switchMap, tap, toArray } from 'rxjs';
 import { ArchiveInformation } from '../interfaces/archive-information';
 import { PackageInformation } from '../interfaces/package-information';
+import { ExplorerItem } from '../interfaces/explorer-item';
 
 @Injectable({
   providedIn: 'root'
@@ -28,18 +29,12 @@ export class BackendService {
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post<String>(this.apiUrl + 'samples/', formData, { 
-      headers: new HttpHeaders({
-        'Content-Type': 'multipart/form-data',
-        'Accept': 'application/json'
-      })
-    });
+    return this.http.post<String>(this.apiUrl + 'samples/', formData);
   }
 
   getExplorerLevel(id: string, path: string): Observable<any> {
     const fileExtension = path.split('.').pop();
 
-    console.log(fileExtension)
     if (fileExtension === 'xml' || fileExtension === 'ema')
       return this.http.get<any>(this.apiUrl + 'samples/' + id + '/blob' + path, { responseType: 'text' as 'json' });
 
@@ -49,7 +44,11 @@ export class BackendService {
     return this.http.get<any>(this.apiUrl + 'samples/' + id + '/blob' + path, { responseType: 'json' });
   }
 
-  getImageUrl(id: string, path: string): string {
+  getFullUrl(id: string, path: string): string {
     return this.apiUrl + 'samples/' + id + '/blob' + path;
+  }
+
+  getDownloadLink(id: string): string {
+    return this.apiUrl + 'samples/' + id + '/aasx';
   }
 }

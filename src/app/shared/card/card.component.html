@@ -1,15 +1,23 @@
 <div class="card my-4" style="width: 18rem;">
-    <img class="card-img-top" src="./assets/placeholder.svg" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">{{ archive.name }}</h5>
-    </div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">Größe: {{ archive.size }}</li>
-      <li class="list-group-item">Anzahl der Parts: {{ archive.packages }}</li>
-      <li class="list-group-item">Hochgeladen am {{ archive.created }}</li>
-    </ul>
-    <div class="card-body">
-      <a class="btn btn-primary me-3" [routerLink]="['/viewer', archive.id, 0]">Übersicht</a>
-      <a class="card-link" [routerLink]="['/files', archive.id]">Dateien</a>
-    </div>
+  <div class="card-body">
+    <h5 class="card-title">{{ archive.name }}</h5>
   </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Größe: {{ archive.size }}</li>
+    <li *ngIf="archive.status === 'completed'" class="list-group-item">Anzahl der Parts: {{ archive.packages }}</li>
+    <li class="list-group-item">Hochgeladen am {{ archive.created }}</li>
+  </ul>
+
+  <ng-container *ngIf="archive.status === 'completed'">
+    <div class="card-body">
+      <a class="btn btn-primary me-3 mb-3" [routerLink]="['/viewer', archive.id, 0]">Übersicht</a>
+      <a class="btn btn-outline-primary me-3 mb-3" [routerLink]="['/files', archive.id]">Dateien</a>
+      <a class="btn btn-outline-primary me-3" [href]="downloadLink" download>Download AASX</a>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="archive.status !== 'completed'">
+    <div class="card-body">
+      {{ archive.status }}...
+    </div>
+  </ng-container>
+</div>

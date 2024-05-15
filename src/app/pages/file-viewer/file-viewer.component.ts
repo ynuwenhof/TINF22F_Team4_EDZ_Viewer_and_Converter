@@ -16,12 +16,18 @@ export class FileViewerComponent {
   previewImage: string | null = null;
   data: ExplorerItem[];
   id: string;
+  filePath: string;
+  archiveName: string;
 
   constructor(private route: ActivatedRoute, private backend: BackendService) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.id = params['id'];
+
+      this.backend.getArchive(this.id).subscribe(archive => {
+        this.archiveName = archive.name;
+      });
 
       this.backend.getExplorerLevel(this.id, '/').subscribe(data => {
         this.data = data;
@@ -31,18 +37,18 @@ export class FileViewerComponent {
   }
 
   handleItemClick(path: any) {
+    this.filePath = path;
     this.loadingPreview = true;
     this.previewData = null;
     this.previewImage = null;
 
     if (path.endsWith('jpg') || path.endsWith('png')) {
-      this.previewImage = this.backend.getImageUrl(this.id, path);
+      this.previewImage = this.backend.getFullUrl(this.id, path);
       this.loadingPreview = false;
       return;
     }
 
     this.backend.getExplorerLevel(this.id, path).subscribe(data => {
-      console.log(data);
       this.loadingPreview = false;
       this.previewData = data;
     });

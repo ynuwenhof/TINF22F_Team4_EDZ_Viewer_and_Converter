@@ -11,13 +11,13 @@
     <div *ngIf="!loading && data" class="w-100" style="height: 80vh;">
         <div class="d-flex flex-lg-row flex-column justify-content-md-center justify-content-around h-100 border">
             <div class="overflow-scroll p-2" style="width: 30%">
-                <h4>EXPLORER</h4>
+                <h4>{{ archiveName }}</h4>
 
                 <app-accordion *ngFor="let item of data"  [level]="0" [item]="item" [id]="id" [rootDir]="'/'" (itemClicked)="handleItemClick($event)"></app-accordion>
             </div>
 
             <div class="overflow-scroll w-100 p-2 border-start">
-                <h4>VIEWER</h4>
+                <h4>{{ filePath ? filePath : "Bitte Datei auswählen" }}</h4>
 
                 <span *ngIf="loadingPreview">Loading...</span>
                 <img *ngIf="previewImage" [src]="previewImage" alt="Preview">

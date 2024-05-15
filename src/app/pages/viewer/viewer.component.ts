@@ -13,6 +13,7 @@ export class ViewerComponent {
   loading = true;
   archive: ArchiveInformation;
   package: PackageInformation;
+  imageUrl: string;
 
   constructor(private route: ActivatedRoute, private backend: BackendService) {}
 
@@ -28,6 +29,7 @@ export class ViewerComponent {
       this.backend.getPackage(id, index).subscribe(pkg => {
         this.loading = false;
         this.package = pkg;
+        this.imageUrl = this.backend.getFullUrl(id, pkg.image);
       });
     })
   }
