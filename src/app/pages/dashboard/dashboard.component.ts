@@ -15,8 +15,8 @@ export class DashboardComponent {
 
   ngOnInit() {
     this.backend.getAllArchives().subscribe(archives => {
+      this.loading = false;
       for (const archive of archives) {
-        this.loading = false;
         this.archives.push(archive);
       }
     });
