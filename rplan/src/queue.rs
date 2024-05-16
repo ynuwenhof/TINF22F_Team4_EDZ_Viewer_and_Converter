@@ -18,6 +18,13 @@ impl Queue {
         Self { tx }
     }
 
+    pub async fn get_tasks(&self) -> error::Result<Vec<Task>> {
+        let (tx, rx) = oneshot::channel();
+        let msg = Message::GetTasks(tx);
+        let _ = self.tx.send(msg).await;
+        Ok(rx.await?)
+    }
+
     pub async fn get_task(&self, task_hash: String) -> Option<Task> {
         let (tx, rx) = oneshot::channel();
         let msg = Message::GetTask(task_hash, tx);
@@ -76,6 +83,10 @@ async fn task(mut rx: mpsc::Receiver<Message>) {
 
     while let Some(msg) = rx.recv().await {
         match msg {
+            Message::GetTasks(tx) => {
+                let task = queue.get_tasks();
+                let _ = tx.send(task);
+            }
             Message::GetTask(task_hash, tx) => {
                 let task = queue.get_task(&task_hash);
                 let _ = tx.send(task.cloned());
@@ -99,6 +110,12 @@ struct QueueInner {
 }
 
 impl QueueInner {
+    fn get_tasks(&self) -> Vec<Task> {
+        let mut tasks: Vec<Task> = self.queue.iter().map(|e| e.task.clone()).collect();
+        tasks.extend(self.tasks.clone());
+        tasks
+    }
+
     fn get_task(&self, task_hash: &str) -> Option<&Task> {
         self.queue
             .iter()
@@ -153,6 +170,7 @@ impl QueueInner {
 }
 
 enum Message {
+    GetTasks(oneshot::Sender<Vec<Task>>),
     GetTask(String, oneshot::Sender<Option<Task>>),
     PushEntry(Entry, oneshot::Sender<Task>),
     PushAnalyzer(oneshot::Sender<Entry>),

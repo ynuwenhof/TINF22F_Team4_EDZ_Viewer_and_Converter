@@ -67,13 +67,23 @@ pub async fn create_sample(
 }
 
 pub async fn get_samples(State(ctx): State<Context>) -> error::Result<Response> {
-    let samples: Vec<SampleResponse> = ctx
+    let mut samples: Vec<SampleResponse> = ctx
         .db
         .find_samples()
         .await?
         .into_iter()
         .map(SampleResponse::from)
         .collect();
+
+    let tasks: Vec<SampleResponse> = ctx
+        .queue
+        .get_tasks()
+        .await?
+        .drain(..)
+        .map(SampleResponse::from)
+        .collect();
+
+    samples.extend(tasks);
 
     Ok((StatusCode::OK, Json(samples)).into_response())
 }
