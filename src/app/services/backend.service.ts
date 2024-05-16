@@ -9,7 +9,7 @@ import { ExplorerItem } from '../interfaces/explorer-item';
   providedIn: 'root'
 })
 export class BackendService {
-  apiUrl = 'https://rplan.tethy.xyz/';
+  apiUrl = 'https://api.rplan.tethy.xyz/';
 
   constructor(private http: HttpClient) { }
 
