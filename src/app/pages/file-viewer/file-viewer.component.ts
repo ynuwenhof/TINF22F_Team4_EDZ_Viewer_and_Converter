@@ -42,7 +42,7 @@ export class FileViewerComponent {
     this.previewData = null;
     this.previewImage = null;
 
-    if (path.endsWith('jpg') || path.endsWith('png')) {
+    if (path.endsWith('jpg') || path.endsWith('png') || path.endsWith('JPG') || path.endsWith('PNG')) {
       this.previewImage = this.backend.getFullUrl(this.id, path);
       this.loadingPreview = false;
       return;

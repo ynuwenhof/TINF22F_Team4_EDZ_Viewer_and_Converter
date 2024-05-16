@@ -5,3 +5,10 @@
     <h3>oder</h3>
     <label for="fileDropRef" class="btn btn-primary">Datei auswählen</label>
 </div>
+
+<div *ngIf="!canLeave" class="container my-5 d-flex flex-row flex-wrap justify-content-center">
+    Uploading
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>

@@ -38,9 +38,6 @@ export class BackendService {
     if (fileExtension === 'xml' || fileExtension === 'ema')
       return this.http.get<any>(this.apiUrl + 'samples/' + id + '/blob' + path, { responseType: 'text' as 'json' });
 
-    if (fileExtension === 'jpg' || fileExtension === 'png')
-      return this.http.get<any>(this.apiUrl + 'samples/' + id + '/blob' + path, { responseType: 'blob' as 'json' });
-
     return this.http.get<any>(this.apiUrl + 'samples/' + id + '/blob' + path, { responseType: 'json' });
   }
 

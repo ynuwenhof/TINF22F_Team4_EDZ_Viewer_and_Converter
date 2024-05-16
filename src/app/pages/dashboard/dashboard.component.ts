@@ -14,11 +14,16 @@ export class DashboardComponent {
   constructor(private backend: BackendService) {}
 
   ngOnInit() {
+    this.loadArchives();
+    setInterval(() => {
+        this.loadArchives();
+    }, 2000);
+  }
+
+  loadArchives() {
     this.backend.getAllArchives().subscribe(archives => {
       this.loading = false;
-      for (const archive of archives) {
-        this.archives.push(archive);
-      }
+      this.archives = archives;
     });
   }
 }
