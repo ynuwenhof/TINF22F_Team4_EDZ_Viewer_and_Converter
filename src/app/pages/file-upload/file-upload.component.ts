@@ -8,10 +8,19 @@ import { Router } from '@angular/router';
   styleUrl: './file-upload.component.scss'
 })
 export class FileUploadComponent {
+  canLeave = true;
 
-  constructor(private backend: BackendService, private router: Router) {}
+  constructor(private backend: BackendService, private router: Router) {
+    window.addEventListener('beforeunload', (event) => {
+      if (!this.canLeave) {
+        event.returnValue = 'Die Datei Lädt noch hoch!';
+      }
+    });
+  }
 
   fileHandler(e: Event) {
+    this.canLeave = false;
+    
     const fileList = (e.target as HTMLInputElement).files!;
 
     if (fileList.length < 1) {
@@ -21,9 +30,8 @@ export class FileUploadComponent {
     let file: File = fileList[0];
 
     this.backend.uploadFile(file).subscribe(() => {
-      console.log('File uploaded');
+      this.canLeave = true;
+      this.router.navigate(['/dashboard']);
     });
-
-    this.router.navigate(['/dashboard']);
   }
 }
