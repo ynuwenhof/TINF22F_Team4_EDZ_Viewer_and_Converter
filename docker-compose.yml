@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     environment:
       TZ: Europe/Berlin
-      RUST_LOG: debug
+      RUST_LOG: debug,handlebars=error
       RPLAN_MONGODB_URI: "mongodb://rplan-mongo:27017"
     volumes:
       - rplan-data:/data
