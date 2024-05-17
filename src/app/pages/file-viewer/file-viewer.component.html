@@ -20,7 +20,7 @@
                 <h4>{{ filePath ? filePath : "Bitte Datei auswählen" }}</h4>
 
                 <span *ngIf="loadingPreview">Loading...</span>
-                <img *ngIf="previewImage" [src]="previewImage" alt="Preview">
+                <img *ngIf="previewImage" [src]="previewImage" alt="Preview" style="max-width: 400px;">
                 <xml-viewer-component [xml]="previewData"></xml-viewer-component>
             </div>
         </div>
